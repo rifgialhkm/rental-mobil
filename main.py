@@ -4,10 +4,8 @@ from rich.table import Table
 
 console = Console()
 
-
 def clear_terminal():
     os.system("cls" if os.name == "nt" else "clear")
-
 
 car_list = [
     {
@@ -39,7 +37,6 @@ car_list = [
     }
 ]
 
-
 def show_main_menu():
     print("=" * 50)
     print("SELAMAT DATANG DI SISTEM RENTAL MOBIL".center(50))
@@ -54,7 +51,6 @@ def show_main_menu():
     print("6. Keluar")
     print("============================================")
 
-
 def show_submenu_1():
     print("=" * 50)
     print("KELOLA DATA MOBIL".center(50))
@@ -67,7 +63,6 @@ def show_submenu_1():
     print("5. Ubah Status Maintenance")
     print("6. Kembali ke Menu Utama")
     print("=" * 50)
-
 
 def show_car_list():
     table = Table(
@@ -106,7 +101,6 @@ def show_car_list():
 
     console.print(table)
 
-
 def generate_car_id():
     if len(car_list) == 0:
         return "M001"
@@ -123,7 +117,6 @@ def generate_car_id():
 
     return "M" + str(new_number).zfill(3)
 
-
 def input_number(message):
     while True:
         value = input(message)
@@ -132,7 +125,6 @@ def input_number(message):
             return int(value)
 
         print("Input harus berupa angka. Silakan coba lagi.\n")
-
 
 def input_main_menu():
     while True:
@@ -146,7 +138,6 @@ def input_main_menu():
 
         print("Menu yang dipilih tidak valid! Silakan pilih menu 1-6.")
 
-
 def input_submenu_1():
     while True:
         selected_menu = input("Pilih menu: ")
@@ -159,14 +150,12 @@ def input_submenu_1():
 
         print("Menu yang dipilih tidak valid! Silakan pilih menu 1-6.")
 
-
 def find_car_by_id(car_id):
     for car in car_list:
         if car["id"] == car_id:
             return car
 
     return None
-
 
 while True:
     clear_terminal()
