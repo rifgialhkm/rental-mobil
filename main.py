@@ -100,6 +100,41 @@ def show_submenu_2():
     print("5. Kembali ke Menu Utama")
     print("=" * 50)
 
+def input_required(message):
+    while True:
+        value = input(message).strip()
+
+        if value != "":
+            return value
+
+        print("Input tidak boleh kosong. Silakan isi kembali.\n")
+
+def input_number_required(message):
+    while True:
+        value = input(message).strip()
+
+        if value == "":
+            print("Input tidak boleh kosong. Silakan isi kembali.\n")
+        elif not value.isdigit():
+            print("Input harus berupa angka. Silakan coba lagi.\n")
+        elif int(value) <= 0:
+            print("Input harus lebih dari 0. Silakan coba lagi.\n")
+        else:
+            return int(value)
+
+def input_main_menu():
+    while True:
+        selected_menu = input("Pilih menu: ")
+
+        if selected_menu.isdigit():
+            selected_menu = int(selected_menu)
+
+            if selected_menu in range(1, 7):
+                return selected_menu
+
+        print("Menu yang dipilih tidak valid! Silakan pilih menu 1-6.")
+
+# Function Helper Cars Menu
 def show_car_list():
     table = Table(
         title="Daftar Mobil",
@@ -153,40 +188,6 @@ def generate_car_id():
 
     return "M" + str(new_number).zfill(3)
 
-def input_required(message):
-    while True:
-        value = input(message).strip()
-
-        if value != "":
-            return value
-
-        print("Input tidak boleh kosong. Silakan isi kembali.\n")
-
-def input_number_required(message):
-    while True:
-        value = input(message).strip()
-
-        if value == "":
-            print("Input tidak boleh kosong. Silakan isi kembali.\n")
-        elif not value.isdigit():
-            print("Input harus berupa angka. Silakan coba lagi.\n")
-        elif int(value) <= 0:
-            print("Input harus lebih dari 0. Silakan coba lagi.\n")
-        else:
-            return int(value)
-
-def input_main_menu():
-    while True:
-        selected_menu = input("Pilih menu: ")
-
-        if selected_menu.isdigit():
-            selected_menu = int(selected_menu)
-
-            if selected_menu in range(1, 7):
-                return selected_menu
-
-        print("Menu yang dipilih tidak valid! Silakan pilih menu 1-6.")
-
 def input_submenu_1():
     while True:
         selected_menu = input("Pilih menu: ")
@@ -203,6 +204,69 @@ def find_car_by_id(car_id):
     for car in car_list:
         if car["id"] == car_id:
             return car
+
+    return None
+
+# Function Helper Customer Menu
+def show_customer_list():
+    table = Table(
+        title="Daftar Customer",
+        show_header=True,
+        header_style="bold magenta"
+    )
+
+    table.add_column("ID Customer", style="dim", width=12)
+    table.add_column("Nama")
+    table.add_column("No. KTP", justify="center")
+    table.add_column("No. HP", justify="center")
+    table.add_column("Alamat")
+
+    for customer in customer_list:
+        table.add_row(
+            customer["id_customer"],
+            customer["nama"],
+            customer["no_ktp"],
+            customer["no_hp"],
+            customer["alamat"]
+        )
+
+    console.print(table)
+
+
+def generate_customer_id():
+    if len(customer_list) == 0:
+        return "C001"
+
+    max_number = 0
+
+    for customer in customer_list:
+        number = int(customer["id_customer"][1:])
+
+        if number > max_number:
+            max_number = number
+
+    new_number = max_number + 1
+
+    return "C" + str(new_number).zfill(3)
+
+
+def input_submenu_2():
+    while True:
+        selected_menu = input("Pilih menu: ")
+
+        if selected_menu.isdigit():
+            selected_menu = int(selected_menu)
+
+            if selected_menu in range(1, 6):
+                return selected_menu
+
+        print("Menu yang dipilih tidak valid! Silakan pilih menu 1-5.")
+
+
+def find_customer_by_id(customer_id):
+    for customer in customer_list:
+        if customer["id_customer"] == customer_id:
+            return customer
 
     return None
 
@@ -394,9 +458,133 @@ while True:
                 break
 
     elif selected_main_menu == 2:
-        clear_terminal()
-        print("Kelola Data Customer")
-        input("Tekan Enter untuk kembali ke menu utama...")
+        while True:
+            clear_terminal()
+            show_submenu_2()
+
+            selected_submenu = input_submenu_2()
+
+            if selected_submenu == 1:
+                clear_terminal()
+                show_customer_list()
+                input("Tekan Enter untuk kembali ke submenu...")
+
+            elif selected_submenu == 2:
+                clear_terminal()
+                print("=" * 50)
+                print("TAMBAH CUSTOMER".center(50))
+                print("=" * 50)
+
+                new_id = generate_customer_id()
+                print(f"ID Customer: {new_id}")
+
+                nama = input_required("Masukkan nama customer: ")
+                no_ktp = input_number_required("Masukkan nomor KTP: ")
+                no_hp = input_number_required("Masukkan nomor HP: ")
+                alamat = input_required("Masukkan alamat: ")
+
+                customer_list.append({
+                    "id_customer": new_id,
+                    "nama": nama,
+                    "no_ktp": str(no_ktp),
+                    "no_hp": str(no_hp),
+                    "alamat": alamat
+                })
+
+                print("\nData customer berhasil ditambahkan!\n")
+                show_customer_list()
+
+                input("Tekan Enter untuk kembali ke submenu...")
+
+            elif selected_submenu == 3:
+                clear_terminal()
+                show_customer_list()
+
+                while True:
+                    selected_id = input("Masukkan ID customer yang ingin diubah: ").upper()
+                    selected_customer = find_customer_by_id(selected_id)
+
+                    if selected_customer is not None:
+                        break
+
+                    print("ID customer tidak ada. Silakan masukkan kembali.\n")
+
+                clear_terminal()
+                print("=" * 50)
+                print("UPDATE DATA CUSTOMER".center(50))
+                print("=" * 50)
+                print(f"ID Customer : {selected_customer['id_customer']}")
+                print(f"Nama        : {selected_customer['nama']}")
+                print(f"No. KTP     : {selected_customer['no_ktp']}")
+                print(f"No. HP      : {selected_customer['no_hp']}")
+                print(f"Alamat      : {selected_customer['alamat']}")
+                print("=" * 50)
+                print("Kosongkan input jika tidak ingin mengubah data.\n")
+
+                new_nama = input("Masukkan nama baru: ").strip()
+
+                while True:
+                    new_no_ktp = input("Masukkan nomor KTP baru: ").strip()
+
+                    if new_no_ktp == "":
+                        break
+
+                    if new_no_ktp.isdigit():
+                        selected_customer["no_ktp"] = new_no_ktp
+                        break
+
+                    print("Nomor KTP harus berupa angka. Silakan coba lagi.\n")
+
+                while True:
+                    new_no_hp = input("Masukkan nomor HP baru: ").strip()
+
+                    if new_no_hp == "":
+                        break
+
+                    if new_no_hp.isdigit():
+                        selected_customer["no_hp"] = new_no_hp
+                        break
+
+                    print("Nomor HP harus berupa angka. Silakan coba lagi.\n")
+
+                new_alamat = input("Masukkan alamat baru: ").strip()
+
+                if new_nama != "":
+                    selected_customer["nama"] = new_nama
+
+                if new_alamat != "":
+                    selected_customer["alamat"] = new_alamat
+
+                print("\nData customer berhasil diubah!\n")
+                show_customer_list()
+
+                input("Tekan Enter untuk kembali ke submenu...")
+
+            elif selected_submenu == 4:
+                clear_terminal()
+                show_customer_list()
+
+                while True:
+                    selected_id = input("Masukkan ID customer yang ingin dihapus: ").upper()
+                    selected_customer = find_customer_by_id(selected_id)
+
+                    if selected_customer is not None:
+                        break
+
+                    print("ID customer tidak ada. Silakan masukkan kembali.\n")
+
+                customer_list.remove(selected_customer)
+
+                print("\nData customer berhasil dihapus!\n")
+                show_customer_list()
+
+                input("Tekan Enter untuk kembali ke submenu...")
+
+            elif selected_submenu == 5:
+                clear_terminal()
+                print("Kembali ke Menu Utama...")
+                input("Tekan Enter untuk lanjut...")
+                break
 
     elif selected_main_menu == 3:
         clear_terminal()
