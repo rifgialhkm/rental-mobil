@@ -37,6 +37,30 @@ car_list = [
     }
 ]
 
+customer_list = [
+    {
+        "id_customer": "C001",
+        "nama": "Budi Santoso",
+        "no_ktp": "3171010101010001",
+        "no_hp": "081234567890",
+        "alamat": "Jakarta Selatan"
+    },
+    {
+        "id_customer": "C002",
+        "nama": "Andi Pratama",
+        "no_ktp": "3171010202020002",
+        "no_hp": "081298765432",
+        "alamat": "Depok"
+    },
+    {
+        "id_customer": "C003",
+        "nama": "Siti Aminah",
+        "no_ktp": "3171010303030003",
+        "no_hp": "082112223333",
+        "alamat": "Bekasi"
+    }
+]
+
 def show_main_menu():
     print("=" * 50)
     print("SELAMAT DATANG DI SISTEM RENTAL MOBIL".center(50))
@@ -62,6 +86,18 @@ def show_submenu_1():
     print("4. Hapus Data Mobil")
     print("5. Ubah Status Maintenance")
     print("6. Kembali ke Menu Utama")
+    print("=" * 50)
+
+def show_submenu_2():
+    print("=" * 50)
+    print("KELOLA DATA CUSTOMER".center(50))
+    print("=" * 50)
+    print()
+    print("1. Lihat Daftar Customer")
+    print("2. Tambah Customer")
+    print("3. Update Data Customer")
+    print("4. Hapus Data Customer")
+    print("5. Kembali ke Menu Utama")
     print("=" * 50)
 
 def show_car_list():
@@ -117,14 +153,27 @@ def generate_car_id():
 
     return "M" + str(new_number).zfill(3)
 
-def input_number(message):
+def input_required(message):
     while True:
-        value = input(message)
+        value = input(message).strip()
 
-        if value.isdigit():
+        if value != "":
+            return value
+
+        print("Input tidak boleh kosong. Silakan isi kembali.\n")
+
+def input_number_required(message):
+    while True:
+        value = input(message).strip()
+
+        if value == "":
+            print("Input tidak boleh kosong. Silakan isi kembali.\n")
+        elif not value.isdigit():
+            print("Input harus berupa angka. Silakan coba lagi.\n")
+        elif int(value) <= 0:
+            print("Input harus lebih dari 0. Silakan coba lagi.\n")
+        else:
             return int(value)
-
-        print("Input harus berupa angka. Silakan coba lagi.\n")
 
 def input_main_menu():
     while True:
@@ -184,11 +233,11 @@ while True:
                 new_id = generate_car_id()
                 print(f"ID Mobil: {new_id}")
 
-                brand = input("Masukkan merk mobil: ")
-                model = input("Masukkan model mobil: ")
-                year = input_number("Masukkan tahun pembuatan: ")
-                license_plate = input("Masukkan plat nomor: ")
-                daily_rate = input_number("Masukkan harga sewa /hari: ")
+                brand = input_required("Masukkan merk mobil: ")
+                model = input_required("Masukkan model mobil: ")
+                year = input_number_required("Masukkan tahun pembuatan: ")
+                license_plate = input_required("Masukkan plat nomor: ").upper()
+                daily_rate = input_number_required("Masukkan harga sewa /hari: ")
 
                 car_list.append({
                     "id": new_id,
@@ -218,46 +267,57 @@ while True:
 
                     print("ID mobil tidak ada. Silakan masukkan kembali.\n")
 
+                clear_terminal()
+                print("=" * 50)
+                print("UPDATE DATA MOBIL".center(50))
+                print("=" * 50)
+                print(f"ID Mobil        : {selected_car['id']}")
+                print(f"Merk            : {selected_car['brand']}")
+                print(f"Model           : {selected_car['model']}")
+                print(f"Tahun           : {selected_car['year']}")
+                print(f"Plat Nomor      : {selected_car['license_plate']}")
+                print(f"Harga Sewa/Hari : Rp{selected_car['daily_rate']:,}".replace(",", "."))
+                print(f"Status          : {selected_car['status']}")
+                print("=" * 50)
+                print("Kosongkan input jika tidak ingin mengubah data.\n")
+
+                new_brand = input("Masukkan merk baru: ").strip()
+                new_model = input("Masukkan model baru: ").strip()
+
                 while True:
-                    print("\nPilih kolom yang ingin diubah:")
-                    print("1. Merk")
-                    print("2. Model")
-                    print("3. Tahun")
-                    print("4. Plat Nomor")
-                    print("5. Harga Sewa")
-                    print("6. Semua")
+                    new_year = input("Masukkan tahun baru: ").strip()
 
-                    selected_column = input("Pilih 1-6: ")
+                    if new_year == "":
+                        break
 
-                    if selected_column.isdigit():
-                        selected_column = int(selected_column)
+                    if new_year.isdigit() and int(new_year) > 0:
+                        selected_car["year"] = int(new_year)
+                        break
 
-                        if selected_column in range(1, 7):
-                            break
+                    print("Tahun harus berupa angka lebih dari 0. Silakan coba lagi.\n")
 
-                    print("Pilihan kolom tidak valid. Silakan pilih 1-6.\n")
+                new_license_plate = input("Masukkan plat nomor baru: ").strip().upper()
 
-                if selected_column == 1:
-                    selected_car["brand"] = input("Masukkan merk baru: ")
+                while True:
+                    new_daily_rate = input("Masukkan harga sewa baru: ").strip()
 
-                elif selected_column == 2:
-                    selected_car["model"] = input("Masukkan model baru: ")
+                    if new_daily_rate == "":
+                        break
 
-                elif selected_column == 3:
-                    selected_car["year"] = input_number("Masukkan tahun baru: ")
+                    if new_daily_rate.isdigit() and int(new_daily_rate) > 0:
+                        selected_car["daily_rate"] = int(new_daily_rate)
+                        break
 
-                elif selected_column == 4:
-                    selected_car["license_plate"] = input("Masukkan plat nomor baru: ")
+                    print("Harga sewa harus berupa angka lebih dari 0. Silakan coba lagi.\n")
 
-                elif selected_column == 5:
-                    selected_car["daily_rate"] = input_number("Masukkan harga sewa baru: ")
+                if new_brand != "":
+                    selected_car["brand"] = new_brand
 
-                elif selected_column == 6:
-                    selected_car["brand"] = input("Masukkan merk baru: ")
-                    selected_car["model"] = input("Masukkan model baru: ")
-                    selected_car["year"] = input_number("Masukkan tahun baru: ")
-                    selected_car["license_plate"] = input("Masukkan plat nomor baru: ")
-                    selected_car["daily_rate"] = input_number("Masukkan harga sewa baru: ")
+                if new_model != "":
+                    selected_car["model"] = new_model
+
+                if new_license_plate != "":
+                    selected_car["license_plate"] = new_license_plate
 
                 print("\nData mobil berhasil diubah!\n")
                 show_car_list()
