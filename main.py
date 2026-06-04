@@ -173,6 +173,17 @@ def input_number_min_zero(message):
         else:
             return int(value)
 
+def confirm_action(message):
+    while True:
+        confirmation = input(message).strip().lower()
+
+        if confirmation == "y":
+            return True
+        elif confirmation == "n":
+            return False
+
+        print("Input tidak valid. Masukkan y atau n.\n")
+
 def input_main_menu():
     while True:
         selected_menu = input("Pilih menu: ")
@@ -478,6 +489,19 @@ while True:
                 license_plate = input_required("Masukkan plat nomor: ").upper()
                 daily_rate = input_number_required("Masukkan harga sewa /hari: ")
 
+                print("\nData mobil yang akan ditambahkan:")
+                print(f"ID Mobil        : {new_id}")
+                print(f"Merk            : {brand}")
+                print(f"Model           : {model}")
+                print(f"Tahun           : {year}")
+                print(f"Plat Nomor      : {license_plate}")
+                print(f"Harga Sewa/Hari : Rp{daily_rate:,}".replace(",", "."))
+
+                if not confirm_action("\nSimpan data mobil? y/n: "):
+                    print("\nData mobil batal ditambahkan.")
+                    input("Tekan Enter untuk kembali ke submenu...")
+                    continue
+
                 car_list.append({
                     "id": new_id,
                     "brand": brand,
@@ -520,6 +544,12 @@ while True:
                 print("=" * 50)
                 print("Kosongkan input jika tidak ingin mengubah data.\n")
 
+                updated_brand = selected_car["brand"]
+                updated_model = selected_car["model"]
+                updated_year = selected_car["year"]
+                updated_license_plate = selected_car["license_plate"]
+                updated_daily_rate = selected_car["daily_rate"]
+
                 new_brand = input("Masukkan merk baru: ").strip()
                 new_model = input("Masukkan model baru: ").strip()
 
@@ -530,7 +560,7 @@ while True:
                         break
 
                     if new_year.isdigit() and int(new_year) > 0:
-                        selected_car["year"] = int(new_year)
+                        updated_year = int(new_year)
                         break
 
                     print("Tahun harus berupa angka lebih dari 0. Silakan coba lagi.\n")
@@ -544,19 +574,39 @@ while True:
                         break
 
                     if new_daily_rate.isdigit() and int(new_daily_rate) > 0:
-                        selected_car["daily_rate"] = int(new_daily_rate)
+                        updated_daily_rate = int(new_daily_rate)
                         break
 
                     print("Harga sewa harus berupa angka lebih dari 0. Silakan coba lagi.\n")
 
                 if new_brand != "":
-                    selected_car["brand"] = new_brand
+                    updated_brand = new_brand
 
                 if new_model != "":
-                    selected_car["model"] = new_model
+                    updated_model = new_model
 
                 if new_license_plate != "":
-                    selected_car["license_plate"] = new_license_plate
+                    updated_license_plate = new_license_plate
+
+                print("\nData mobil setelah update:")
+                print(f"ID Mobil        : {selected_car['id']}")
+                print(f"Merk            : {updated_brand}")
+                print(f"Model           : {updated_model}")
+                print(f"Tahun           : {updated_year}")
+                print(f"Plat Nomor      : {updated_license_plate}")
+                print(f"Harga Sewa/Hari : Rp{updated_daily_rate:,}".replace(",", "."))
+                print(f"Status          : {selected_car['status']}")
+
+                if not confirm_action("\nUpdate data mobil? y/n: "):
+                    print("\nData mobil batal diubah.")
+                    input("Tekan Enter untuk kembali ke submenu...")
+                    continue
+
+                selected_car["brand"] = updated_brand
+                selected_car["model"] = updated_model
+                selected_car["year"] = updated_year
+                selected_car["license_plate"] = updated_license_plate
+                selected_car["daily_rate"] = updated_daily_rate
 
                 print("\nData mobil berhasil diubah!\n")
                 show_car_list()
@@ -590,6 +640,17 @@ while True:
                     if not car_found:
                         print("ID mobil tidak ada. Silakan masukkan kembali.\n")
 
+                print("\nData mobil yang akan dihapus:")
+                print(f"ID Mobil        : {selected_car['id']}")
+                print(f"Merk            : {selected_car['brand']}")
+                print(f"Model           : {selected_car['model']}")
+                print(f"Plat Nomor      : {selected_car['license_plate']}")
+
+                if not confirm_action("\nHapus data mobil? y/n: "):
+                    print("\nData mobil batal dihapus.")
+                    input("Tekan Enter untuk kembali ke submenu...")
+                    continue
+
                 car_list.remove(selected_car)
 
                 print("\nData mobil berhasil dihapus!\n")
@@ -614,10 +675,20 @@ while True:
                     print("\nMobil yang sedang disewa tidak bisa diubah status maintenance.")
 
                 elif selected_car["status"] == "available":
+                    if not confirm_action("\nUbah status mobil menjadi maintenance? y/n: "):
+                        print("\nPerubahan status mobil dibatalkan.")
+                        input("Tekan Enter untuk kembali ke submenu...")
+                        continue
+
                     selected_car["status"] = "maintenance"
                     print("\nStatus mobil berhasil diubah menjadi maintenance.")
 
                 elif selected_car["status"] == "maintenance":
+                    if not confirm_action("\nUbah status mobil menjadi tersedia? y/n: "):
+                        print("\nPerubahan status mobil dibatalkan.")
+                        input("Tekan Enter untuk kembali ke submenu...")
+                        continue
+
                     selected_car["status"] = "available"
                     print("\nStatus mobil berhasil diubah menjadi tersedia.")
 
@@ -658,6 +729,18 @@ while True:
                 phone_number = input_number_required("Masukkan nomor HP: ")
                 address = input_required("Masukkan alamat: ")
 
+                print("\nData customer yang akan ditambahkan:")
+                print(f"ID Customer : {new_id}")
+                print(f"Nama        : {name}")
+                print(f"No. KTP     : {national_id}")
+                print(f"No. HP      : {phone_number}")
+                print(f"Alamat      : {address}")
+
+                if not confirm_action("\nSimpan data customer? y/n: "):
+                    print("\nData customer batal ditambahkan.")
+                    input("Tekan Enter untuk kembali ke submenu...")
+                    continue
+
                 customer_list.append({
                     "customer_id": new_id,
                     "name": name,
@@ -696,6 +779,11 @@ while True:
                 print("=" * 50)
                 print("Kosongkan input jika tidak ingin mengubah data.\n")
 
+                updated_name = selected_customer["name"]
+                updated_national_id = selected_customer["national_id"]
+                updated_phone_number = selected_customer["phone_number"]
+                updated_address = selected_customer["address"]
+
                 new_name = input("Masukkan nama baru: ").strip()
 
                 while True:
@@ -705,7 +793,7 @@ while True:
                         break
 
                     if new_national_id.isdigit():
-                        selected_customer["national_id"] = new_national_id
+                        updated_national_id = new_national_id
                         break
 
                     print("Nomor KTP harus berupa angka. Silakan coba lagi.\n")
@@ -717,7 +805,7 @@ while True:
                         break
 
                     if new_phone_number.isdigit():
-                        selected_customer["phone_number"] = new_phone_number
+                        updated_phone_number = new_phone_number
                         break
 
                     print("Nomor HP harus berupa angka. Silakan coba lagi.\n")
@@ -725,10 +813,27 @@ while True:
                 new_address = input("Masukkan alamat baru: ").strip()
 
                 if new_name != "":
-                    selected_customer["name"] = new_name
+                    updated_name = new_name
 
                 if new_address != "":
-                    selected_customer["address"] = new_address
+                    updated_address = new_address
+
+                print("\nData customer setelah update:")
+                print(f"ID Customer : {selected_customer['customer_id']}")
+                print(f"Nama        : {updated_name}")
+                print(f"No. KTP     : {updated_national_id}")
+                print(f"No. HP      : {updated_phone_number}")
+                print(f"Alamat      : {updated_address}")
+
+                if not confirm_action("\nUpdate data customer? y/n: "):
+                    print("\nData customer batal diubah.")
+                    input("Tekan Enter untuk kembali ke submenu...")
+                    continue
+
+                selected_customer["name"] = updated_name
+                selected_customer["national_id"] = updated_national_id
+                selected_customer["phone_number"] = updated_phone_number
+                selected_customer["address"] = updated_address
 
                 print("\nData customer berhasil diubah!\n")
                 show_customer_list()
@@ -749,6 +854,18 @@ while True:
                         print("Customer yang masih punya transaksi berjalan tidak boleh dihapus. Silakan pilih customer lain.\n")
                     else:
                         break
+
+                print("\nData customer yang akan dihapus:")
+                print(f"ID Customer : {selected_customer['customer_id']}")
+                print(f"Nama        : {selected_customer['name']}")
+                print(f"No. KTP     : {selected_customer['national_id']}")
+                print(f"No. HP      : {selected_customer['phone_number']}")
+                print(f"Alamat      : {selected_customer['address']}")
+
+                if not confirm_action("\nHapus data customer? y/n: "):
+                    print("\nData customer batal dihapus.")
+                    input("Tekan Enter untuk kembali ke submenu...")
+                    continue
 
                 customer_list.remove(selected_customer)
 
@@ -812,6 +929,20 @@ while True:
 
                 new_transaction_id = generate_transaction_id()
 
+                print("\nData transaksi yang akan disimpan:")
+                print(f"ID Transaksi : {new_transaction_id}")
+                print(f"Customer     : {selected_customer['name']}")
+                print(f"Mobil        : {selected_car['brand']} {selected_car['model']}")
+                print(f"Lama Sewa    : {rental_days} hari")
+                print(f"Subtotal     : Rp{subtotal:,}".replace(",", "."))
+                print(f"Diskon       : Rp{discount:,}".replace(",", "."))
+                print(f"Total Bayar  : Rp{total_payment:,}".replace(",", "."))
+
+                if not confirm_action("\nSimpan transaksi rental? y/n: "):
+                    print("\nTransaksi rental batal disimpan.")
+                    input("Tekan Enter untuk kembali ke submenu...")
+                    continue
+
                 trx_list.append({
                     "transaction_id": new_transaction_id,
                     "customer_id": selected_customer["customer_id"],
@@ -860,12 +991,26 @@ while True:
                 late_days = input_number_min_zero("Masukkan jumlah hari terlambat: ")
                 fine = late_days * 50000
 
-                selected_transaction["fine"] = fine
-                selected_transaction["total_payment"] = (
+                updated_total_payment = (
                     selected_transaction["subtotal"]
                     - selected_transaction["discount"]
-                    + selected_transaction["fine"]
+                    + fine
                 )
+
+                print("\nData pengembalian:")
+                print(f"ID Transaksi : {selected_transaction['transaction_id']}")
+                print(f"Customer     : {get_customer_name(selected_transaction['customer_id'])}")
+                print(f"Mobil        : {get_car_name(selected_transaction['car_id'])}")
+                print(f"Denda        : Rp{fine:,}".replace(",", "."))
+                print(f"Total Bayar  : Rp{updated_total_payment:,}".replace(",", "."))
+
+                if not confirm_action("\nProses pengembalian mobil? y/n: "):
+                    print("\nPengembalian mobil dibatalkan.")
+                    input("Tekan Enter untuk kembali ke submenu...")
+                    continue
+
+                selected_transaction["fine"] = fine
+                selected_transaction["total_payment"] = updated_total_payment
                 selected_transaction["status"] = "selesai"
 
                 selected_car = find_car_by_id(selected_transaction["car_id"])
